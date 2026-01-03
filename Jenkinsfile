@@ -1,21 +1,39 @@
 pipeline {
     agent {
-        label 'rutikesh-agent'
+        label 'MyAgent'
     }
 
     stages {
 
+        stage('Check Branch') {
+            steps {
+                script {
+                    // For Generic Webhook / normal pipeline
+                    def branchName = sh(
+                        script: "git rev-parse --abbrev-ref HEAD || echo main",
+                        returnStdout: true
+                    ).trim()
+
+                    if (branchName != 'main') {
+                        error "Not main branch. Skipping pipeline."
+                    }
+
+                    echo "Running on main branch"
+                }
+            }
+        }
+
         stage('Code Cloning') {
             steps {
-                echo 'This is for code cloning'
-                // git url: 'https://github.com/Rutikesh/django-notes-app.git', branch: 'main'
+                echo 'Cloning source code'
+                checkout scm
                 echo 'Code cloning successful'
             }
         }
 
         stage('Code Building') {
             steps {
-                echo 'This is for code building'
+                echo 'Building Docker image'
                 sh 'whoami'
                 sh 'docker build -t notes-app:latest .'
             }
@@ -23,15 +41,13 @@ pipeline {
 
         stage('Code Testing') {
             steps {
-                echo 'This is for code testing'
-                // Add real tests later
+                echo 'Running tests (placeholder)'
             }
         }
 
-        stage('Code Push in Docker Hub') {
+        stage('Push Image to Docker Hub') {
             steps {
                 echo 'Pushing image to Docker Hub'
-
                 withCredentials([
                     usernamePassword(
                         credentialsId: 'DoDjJe',
@@ -40,6 +56,7 @@ pipeline {
                     )
                 ]) {
                     sh '''
+                        set -e
                         echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
                         docker tag notes-app:latest $DOCKER_USER/notes-app:latest
                         docker push $DOCKER_USER/notes-app:latest
