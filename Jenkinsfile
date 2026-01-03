@@ -1,27 +1,27 @@
 pipeline {
     agent {
-        label 'MyAgent'
+        label 'rutikesh-agent'
     }
 
     stages {
 
-        stage('Check Branch') {
-            steps {
-                script {
-                    // For Generic Webhook / normal pipeline
-                    def branchName = sh(
-                        script: "git rev-parse --abbrev-ref HEAD || echo main",
-                        returnStdout: true
-                    ).trim()
+        // stage('Check Branch') {
+        //     steps {
+        //         script {
+        //             // For Generic Webhook / normal pipeline
+        //             def branchName = sh(
+        //                 script: "git rev-parse --abbrev-ref HEAD || echo main",
+        //                 returnStdout: true
+        //             ).trim()
 
-                    if (branchName != 'main') {
-                        error "Not main branch. Skipping pipeline."
-                    }
+        //             if (branchName != 'main') {
+        //                 error "Not main branch. Skipping pipeline."
+        //             }
 
-                    echo "Running on main branch"
-                }
-            }
-        }
+        //             echo "Running on main branch"
+        //         }
+        //     }
+        // }
 
         stage('Code Cloning') {
             steps {
