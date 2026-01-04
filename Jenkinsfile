@@ -29,7 +29,7 @@ pipeline {
         stage('Code Building') {
             steps {
                 script {
-                    Build("notes-app","latest")
+                    Build("notes-app","latest","rutikesh1907")
                 }
             }
         }
