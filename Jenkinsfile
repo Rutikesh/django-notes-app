@@ -1,3 +1,4 @@
+@Library("SharedFiles") _
 pipeline {
     agent {
         label 'rutikesh-agent'
@@ -5,6 +6,13 @@ pipeline {
 
     stages {
 
+        stage("from shared library"){
+            steps{
+                script{
+                    hello()
+                }
+            }
+        }
         // stage('Check Branch') {
         //     steps {
         //         script {
@@ -31,46 +39,46 @@ pipeline {
             }
         }
 
-        stage('Code Building') {
-            steps {
-                echo 'Building Docker image'
-                sh 'whoami'
-                sh 'docker build -t notes-app:latest .'
-            }
-        }
+        // stage('Code Building') {
+        //     steps {
+        //         echo 'Building Docker image'
+        //         sh 'whoami'
+        //         sh 'docker build -t notes-app:latest .'
+        //     }
+        // }
 
-        stage('Code Testing') {
-            steps {
-                echo 'Running tests (placeholder)'
-            }
-        }
+        // stage('Code Testing') {
+        //     steps {
+        //         echo 'Running tests (placeholder)'
+        //     }
+        // }
 
-        stage('Push Image to Docker Hub') {
-            steps {
-                echo 'Pushing image to Docker Hub'
-                withCredentials([
-                    usernamePassword(
-                        credentialsId: 'DoDjJe',
-                        usernameVariable: 'DOCKER_USER',
-                        passwordVariable: 'DOCKER_PASS'
-                    )
-                ]) {
-                    sh '''
-                        set -e
-                        echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
-                        docker tag notes-app:latest $DOCKER_USER/notes-app:latest
-                        docker push $DOCKER_USER/notes-app:latest
-                    '''
-                }
-            }
-        }
+        // stage('Push Image to Docker Hub') {
+        //     steps {
+        //         echo 'Pushing image to Docker Hub'
+        //         withCredentials([
+        //             usernamePassword(
+        //                 credentialsId: 'DoDjJe',
+        //                 usernameVariable: 'DOCKER_USER',
+        //                 passwordVariable: 'DOCKER_PASS'
+        //             )
+        //         ]) {
+        //             sh '''
+        //                 set -e
+        //                 echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+        //                 docker tag notes-app:latest $DOCKER_USER/notes-app:latest
+        //                 docker push $DOCKER_USER/notes-app:latest
+        //             '''
+        //         }
+        //     }
+        // }
 
-        stage('Code Deploying') {
-            steps {
-                echo 'Deploying application using Docker Compose'
-                sh 'docker compose up -d'
-            }
-        }
+        // stage('Code Deploying') {
+        //     steps {
+        //         echo 'Deploying application using Docker Compose'
+        //         sh 'docker compose up -d'
+        //     }
+        // }
     }
 }
 
